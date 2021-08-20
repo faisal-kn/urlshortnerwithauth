@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 
 exports.signup = async (req, res, next) => {
   try {
@@ -33,7 +34,7 @@ exports.login = async (req, res, next) => {
     if (!email || !password) {
       throw new Error("Email and Password not provided");
     }
-    const user = await User.findOne({ email: email }).select('+password');
+    const user = await User.findOne({ email: email }).select("+password");
     console.log(user);
     if (!user || !(await user.checkPassword(password, user.password)))
       throw new Error("Incorrect email or password.");
@@ -53,4 +54,29 @@ exports.login = async (req, res, next) => {
       error: err,
     });
   }
+};
+
+exports.protect = async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies?.jwt) {
+    token = req.cookies?.jwt;
+  }
+  if (!token) {
+    throw new Error("You are not logged in . Please log in to get access");
+  }
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  const user = await User.findById(decoded.id);
+  if (!user)
+    throw new Error(
+      "User belonging to this token has been deleted from our database"
+    );
+  req.CurrentUser = user;
+  res.locals.user = user;
+  next();
 };
