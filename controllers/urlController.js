@@ -8,3 +8,21 @@ exports.createUrl = async (req, res, next) => {
     res.json({ status: "failed", error: err });
   }
 };
+
+exports.getAllUrl = async (req, res, next) => {
+  try {
+    const allUrl = await Url.find();
+    res.status(200).json({ status: "success", data: { allUrl } });
+  } catch (err) {
+    res.json({ status: "failed", error: err });
+  }
+};
+
+exports.getUrl = async (req, res, next) => {
+  try {
+    const allUrl = await Url.find({ shortUrl: req.params.shortUrl });
+    res.status(200).json({ status: "success", data: { allUrl } });
+  } catch (err) {
+    res.json({ status: "failed", error: err });
+  }
+};
