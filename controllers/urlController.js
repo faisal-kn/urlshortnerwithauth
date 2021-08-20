@@ -20,8 +20,10 @@ exports.getAllUrl = async (req, res, next) => {
 
 exports.getUrl = async (req, res, next) => {
   try {
-    const allUrl = await Url.find({ shortUrl: req.params.shortUrl });
-    res.status(200).json({ status: "success", data: { allUrl } });
+    const url = await Url.findOne({ shortUrl: req.params.shortUrl });
+    url.clicks++;
+    await url.save();
+    res.status(200).json({ status: "success", data: { url } });
   } catch (err) {
     res.json({ status: "failed", error: err });
   }
