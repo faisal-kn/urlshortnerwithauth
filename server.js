@@ -17,6 +17,6 @@ mongoose
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, "127.0.0.1", () => {
+app.listen(PORT, () => {
   console.log("listening to request on port 3000");
 });
