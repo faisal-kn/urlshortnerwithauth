@@ -35,7 +35,6 @@ exports.login = async (req, res, next) => {
       throw new Error("Email and Password not provided");
     }
     const user = await User.findOne({ email: email }).select("+password");
-    console.log(user);
     if (!user || !(await user.checkPassword(password, user.password)))
       throw new Error("Incorrect email or password.");
 
@@ -76,7 +75,7 @@ exports.protect = async (req, res, next) => {
     throw new Error(
       "User belonging to this token has been deleted from our database"
     );
-  req.CurrentUser = user;
+  req.user = user;
   res.locals.user = user;
   next();
 };
