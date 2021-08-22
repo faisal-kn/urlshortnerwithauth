@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const urlSchema = new mongoose.Schema({
   fullUrl: {
     type: String,
@@ -8,7 +9,6 @@ const urlSchema = new mongoose.Schema({
   },
   shortUrl: {
     type: String,
-    required: [true, "A short url is required"],
     unique: [true, "This shortUrl already exists"],
   },
   clicks: {

@@ -60,7 +60,7 @@ exports.login = async (req, res, next) => {
     const cookieOptions = {
       expires: new Date(Date.now() + process.env.AUTH_COOKIE_EXPIRES_IN),
       httpOnly: true,
-      secure: req.secure || req.headers("x-forwarded-proto") === "https",
+      // secure: req.secure || req.headers("x-forwarded-proto") === "https",
     };
     res.cookie("auth", token, cookieOptions);
 

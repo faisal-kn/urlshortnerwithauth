@@ -1,7 +1,10 @@
 const Url = require("../models/shortUrl");
+const { nanoid } = require("nanoid");
 
 exports.createUrl = async (req, res, next) => {
   try {
+    if (!req.body.shortUrl) req.body.shortUrl = nanoid(8);
+
     const url = await Url.create(req.body);
     res.status(200).json({ status: "success", data: { url } });
   } catch (err) {
