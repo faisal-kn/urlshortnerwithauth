@@ -3,7 +3,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const shortRouter = require("./Routes/shortRoute");
 const userRouter = require("./Routes/userRoute");
-const cookieParser = require("cookie-parser");
 
 const app = express();
 app.enable('trust-proxy');
