@@ -17,7 +17,8 @@ exports.signup = async (req, res, next) => {
     const cookieOptions = {
       expires: new Date(Date.now() + process.env.AUTH_COOKIE_EXPIRES_IN),
       httpOnly: true,
-      secure: req.secure || req.headers("x-forwarded-proto") === "https",
+      secure: true,
+      sameSite: "None",
     };
     res.cookie("auth", token, cookieOptions);
 
@@ -60,7 +61,8 @@ exports.login = async (req, res, next) => {
     const cookieOptions = {
       expires: new Date(Date.now() + process.env.AUTH_COOKIE_EXPIRES_IN),
       httpOnly: true,
-      // secure: req.secure || req.headers("x-forwarded-proto") === "https",
+      secure: true,
+      sameSite: "None",
     };
     res.cookie("auth", token, cookieOptions);
 
