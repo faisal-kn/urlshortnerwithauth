@@ -5,6 +5,7 @@ const shortRouter = require("./Routes/shortRoute");
 const userRouter = require("./Routes/userRoute");
 const AppError = require("./AppError");
 const app = express();
+
 app.enable("trust-proxy");
 
 app.use(express.json());
