@@ -30,6 +30,7 @@ app.use("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
+  console.log(err);
   res.status(statusCode).json({
     status: "error",
     message: statusCode === 500 ? "Something went wrong" : message,
