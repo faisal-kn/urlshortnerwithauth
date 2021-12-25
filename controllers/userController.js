@@ -9,6 +9,16 @@ exports.getAllUser = async (req, res, next) => {
   }
 };
 
+exports.getCurrentUser = async (req, res, next) => {
+  try {
+    const user = await User.find({ _id: req.user.id });
+
+    res.status(200).json({ status: "success", data: { user: user } });
+  } catch (err) {
+    res.status(401).json({ status: "failed", error: err });
+  }
+};
+
 exports.deleteCurrentUser = async (req, res, next) => {
   try {
     await User.findByIdAndUpdate(req.user.id, { active: false });

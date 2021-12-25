@@ -9,6 +9,7 @@ router
   .post(authController.protect, urlController.createUrl)
   .get(urlController.getAllUrl);
 
+router.route("/userurl").get(authController.protect, urlController.getUserUrl);
 router.route("/:shortUrl").get(authController.protect, urlController.getUrl);
 
 module.exports = router;

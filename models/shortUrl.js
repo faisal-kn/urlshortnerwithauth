@@ -19,6 +19,11 @@ const urlSchema = new mongoose.Schema({
     default: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
     expires: 172800,
   },
+  author: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: [true, "A booking must have a user"],
+  },
 });
 
 const Url = mongoose.model("Url", urlSchema);

@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const AppError = require("../AppError");
 
 exports.signup = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ exports.signup = async (req, res, next) => {
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,
     });
-    
+
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
@@ -18,6 +19,8 @@ exports.signup = async (req, res, next) => {
     const cookieOptions = {
       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       httpOnly: true,
+      secure: true,
+      sameSite: "None",
     };
     res.cookie("auth", token, cookieOptions);
 
@@ -51,7 +54,7 @@ exports.login = async (req, res, next) => {
     }
     const user = await User.findOne({ email: email }).select("+password");
     if (!user || !(await user.checkPassword(password, user.password)))
-      throw new Error("Incorrect email or password.");
+      next(new AppError("Incorrect email or password", 401));
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -60,7 +63,8 @@ exports.login = async (req, res, next) => {
     const cookieOptions = {
       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       httpOnly: true,
-      // secure: req.secure || req.headers("x-forwarded-proto") === "https",
+      secure: true,
+      sameSite: "None",
     };
     res.cookie("auth", token, cookieOptions);
 
@@ -88,15 +92,19 @@ exports.protect = async (req, res, next) => {
   } else if (req.cookies?.auth) {
     token = req.cookies?.auth;
   }
+  console.log(token);
   if (!token) {
-    throw new Error("You are not logged in . Please log in to get access");
+    return next(new AppError("You are not logged in!", 401));
   }
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   const user = await User.findById(decoded.id);
   if (!user)
-    throw new Error(
-      "User belonging to this token has been deleted from our database"
+    next(
+      new AppError(
+        "User belonging to this token has been deleted from our database",
+        401
+      )
     );
   req.user = user;
   res.locals.user = user;

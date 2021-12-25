@@ -13,4 +13,6 @@ router
   .route("/deleteme")
   .delete(authController.protect, userController.deleteCurrentUser);
 
+router.route("/me").get(authController.protect, userController.getCurrentUser);
+
 module.exports = router;
