@@ -10,6 +10,6 @@ router
   .get(urlController.getAllUrl);
 
 router.route("/userurl").get(authController.protect, urlController.getUserUrl);
-router.route("/:shortUrl").get(authController.protect, urlController.getUrl);
+router.route("/:shortUrl").get(urlController.getUrl);
 
 module.exports = router;
