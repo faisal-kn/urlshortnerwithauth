@@ -54,7 +54,7 @@ exports.login = async (req, res, next) => {
     }
     const user = await User.findOne({ email: email }).select("+password");
     if (!user || !(await user.checkPassword(password, user.password)))
-      next(new AppError("Incorrect email or password", 401));
+      return next(new AppError("Incorrect email or password", 401));
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -100,7 +100,7 @@ exports.protect = async (req, res, next) => {
 
   const user = await User.findById(decoded.id);
   if (!user)
-    next(
+    return next(
       new AppError(
         "User belonging to this token has been deleted from our database",
         401
